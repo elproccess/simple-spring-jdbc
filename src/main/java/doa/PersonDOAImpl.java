@@ -10,16 +10,16 @@ import java.sql.SQLException;
 
 public class PersonDOAImpl implements personDOA{
 
-    DataSource datasource;
-    public void setDatasource(DataSource datasource){
-        this.datasource = datasource;
+    DataSource dataSource;
+    public void setDataSource(DataSource dataSource){
+        this.dataSource = dataSource;
     }
     @Override
     public void insertPerson(Person person) {
-        String query = "INSERT INTO CUSTOEMRS(name,email) VALUES(?,?)";
+        String query = "INSERT INTO CUSTOMERS(name,email) VALUES(?,?)";
         Connection conn = null;
         try{
-            conn = datasource.getConnection();
+            conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, person.getName());
             ps.setString(2,person.getEmail());
@@ -41,14 +41,16 @@ public class PersonDOAImpl implements personDOA{
         String query = "SELECT * FROM CUSTOMERS WHERE idCustomers=?";
         Connection conn = null;
         try{
-            conn = datasource.getConnection();
+            conn = dataSource.getConnection();
             Person person = null;
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, Pid);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                person.setEmail(rs.getString("name"));
-                person.setName(rs.getString("email"));
+                person = new Person(
+                        rs.getString("name"),
+                        rs.getString("email")
+                );
             }
             rs.close();
             ps.close();
